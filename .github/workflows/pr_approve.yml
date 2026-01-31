@@ -4,7 +4,7 @@ on:
   pull_request_review:
     types: [submitted, dismissed]
   pull_request:
-    types: [synchronize, opened]
+    types: [synchronize, closed]
 
 jobs:
   manage-approval-label:
@@ -47,8 +47,8 @@ jobs:
               }
             }
 
-      - name: Remove Approved label on PR update
-        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+      - name: Remove Approved label on PR update or close
+        if: github.event_name == 'pull_request' && (github.event.action == 'synchronize' || github.event.action == 'closed')
         uses: actions/github-script@v8
         with:
           script: |
