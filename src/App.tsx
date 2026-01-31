@@ -6,10 +6,7 @@ import './App.css'
 // E
 
 function App() {
-  const [count, setCount] = useState(0)
-  // E
-  //B
-  // C
+  const [count, setCount] = useState(0);
 
   return (
     <>
