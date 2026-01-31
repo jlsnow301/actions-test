@@ -10,7 +10,7 @@ jobs:
   manage-approval-label:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      issues: write
     steps:
       - name: Add Approved label on approval
         if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
@@ -29,21 +29,33 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'Approved'
-            });
+            try {
+              github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'Approved'
+              });
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
 
       - name: Remove Approved label on PR update
         if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
         uses: actions/github-script@v8
         with:
           script: |
-            github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'Approved'
-            });
+            try {
+              github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'Approved'
+              });
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
