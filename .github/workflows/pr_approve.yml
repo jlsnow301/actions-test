@@ -18,12 +18,16 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['Approved']
-            });
+            try {
+              github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['Approved']
+              });
+            } catch (error) {
+              console.log('Could not add label:', error.message);
+            }
 
       - name: Remove Approved label on review dismiss
         if: github.event_name == 'pull_request_review' && github.event.action == 'dismissed'
